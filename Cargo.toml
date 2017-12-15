@@ -6,7 +6,7 @@ license = "MIT"
 description = "Prevent secrets from leaking via `Debug` or `Display` traits"
 
 [dependencies]
-serde = { version ="1.0.24", optional = true }
+serde = { version = "1.0.24", optional = true }
 
 [features]
 default = ["std"]
