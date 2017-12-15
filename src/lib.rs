@@ -103,7 +103,7 @@
 #[cfg(feature = "std")]
 extern crate std;
 
-#[cfg(feature = "serialize")]
+#[cfg(any(feature = "serialize", feature = "deserialize"))]
 extern crate serde;
 
 #[cfg(test)]
