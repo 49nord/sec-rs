@@ -1,13 +1,22 @@
+#![no_std]
+
+#[macro_use]
+#[cfg(feature = "std")]
+extern crate std;
 extern crate serde;
 
 #[cfg(test)]
 mod tests;
 
-use std::fmt;
+use core::fmt;
+
+#[cfg(feature = "std")]
+use std::string::String;
 use serde::{Deserializer, Serializer};
 
 pub struct Secret<T>(T);
 
+#[cfg(feature = "std")]
 impl Secret<String> {
     #[inline]
     pub fn as_str(&self) -> Secret<&str> {

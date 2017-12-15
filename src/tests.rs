@@ -1,5 +1,9 @@
 use super::Secret;
 
+use std::string::String;
+use std::borrow::ToOwned;
+
+
 #[derive(Debug)]
 struct PublicStruct {
     pub secret_field: Secret<String>,
