@@ -27,17 +27,17 @@ impl<T> Secret<T> {
     }
 
     #[inline]
-    pub fn inner(&self) -> &T {
+    pub fn reveal(&self) -> &T {
         &self.0
     }
 
     #[inline]
-    pub fn into_inner(self) -> T {
+    pub fn reveal_into(self) -> T {
         self.0
     }
 
     #[inline]
-    pub fn map<V, F: FnOnce(T) -> V>(self, f: F) -> Secret<V> {
+    pub fn map_revealed<V, F: FnOnce(T) -> V>(self, f: F) -> Secret<V> {
         Secret(f(self.0))
     }
 }
