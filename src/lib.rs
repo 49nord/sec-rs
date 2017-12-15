@@ -17,6 +17,11 @@ impl Secret<String> {
 
 impl<T> Secret<T> {
     #[inline]
+    pub fn new(val: T) -> Secret<T> {
+        Secret(val)
+    }
+
+    #[inline]
     pub fn as_ref(&self) -> Secret<&T> {
         Secret(&self.0)
     }
