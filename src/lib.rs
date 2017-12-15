@@ -45,6 +45,11 @@ impl<T> Secret<T> {
     }
 
     #[inline]
+    pub fn as_mut(&mut self) -> Secret<&mut T> {
+        Secret(&mut self.0)
+    }
+
+    #[inline]
     pub fn reveal(&self) -> &T {
         &self.0
     }
