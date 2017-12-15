@@ -277,3 +277,18 @@ where
         (&self.0).as_expression()
     }
 }
+
+
+#[cfg(all(feature = "diesel_sql", feature = "std"))]
+impl<T, ST, DB> diesel::query_source::Queryable<ST, DB> for Secret<T>
+where
+    DB: diesel::backend::Backend + diesel::types::HasSqlType<ST>,
+    T: diesel::query_source::Queryable<ST, DB>,
+{
+    type Row = T::Row;
+
+    #[inline]
+    fn build(row: Self::Row) -> Self {
+        Secret(T::build(row))
+    }
+}
