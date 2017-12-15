@@ -55,6 +55,9 @@
 //!          alice.session_token.reveal());
 //! ```
 //!
+//! Only methods that contain `reveal` in their name actually allow accessing
+//! the secret value.
+//!
 //! ## Serde support (`deserialize`/`serialize` features)
 //!
 //! If the `deserialize` feature is enabled, any `Secret<T>` will automatically
@@ -122,11 +125,13 @@ pub struct Secret<T>(T);
 
 #[cfg(feature = "std")]
 impl Secret<String> {
+    /// Returns a `str` reference, wrapped in a secret
     #[inline]
     pub fn as_str(&self) -> Secret<&str> {
         Secret(self.0.as_str())
     }
 
+    /// Return and **reveal** a `str` reference.
     #[inline]
     pub fn reveal_str(&self) -> &str {
         self.0.as_str()
@@ -134,31 +139,37 @@ impl Secret<String> {
 }
 
 impl<T> Secret<T> {
+    /// Creates a new secret
     #[inline]
     pub fn new(val: T) -> Secret<T> {
         Secret(val)
     }
 
+    /// Create a secret immutable reference
     #[inline]
     pub fn as_ref(&self) -> Secret<&T> {
         Secret(&self.0)
     }
 
+    /// Create a secret mutable reference
     #[inline]
     pub fn as_mut(&mut self) -> Secret<&mut T> {
         Secret(&mut self.0)
     }
 
+    /// **Reveal** the held value by returning a reference
     #[inline]
     pub fn reveal(&self) -> &T {
         &self.0
     }
 
+    /// **Reveal** the held value by unwrapping
     #[inline]
     pub fn reveal_into(self) -> T {
         self.0
     }
 
+    /// **Reveals** the held value by applying a function to it
     #[inline]
     pub fn map_revealed<V, F: FnOnce(T) -> V>(self, f: F) -> Secret<V> {
         Secret(f(self.0))
