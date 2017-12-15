@@ -58,6 +58,7 @@
 //! Only methods that contain `reveal` in their name actually allow accessing
 //! the secret value.
 //!
+//!
 //! ## Serde support (`deserialize`/`serialize` features)
 //!
 //! If the `deserialize` feature is enabled, any `Secret<T>` will automatically
