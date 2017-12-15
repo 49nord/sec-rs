@@ -83,6 +83,17 @@
 //! secrets. Only enable this feature if you need it.
 //!
 //!
+//! ## Diesel support (`diesel_sql` feature)
+//!
+//! Limited support for inserting and loading `Secret<T>` values through
+//! [Diesel](https://crates.io/crates/diesel) can be enabled by the `diesel_sql`
+//! feature.
+//!
+//! **IMPORTANT**: The database may log and echo back (on error) any query that
+//! fails, takes to long or is otherwise deemed interesting. Using `Secret`
+//! values in expressions should be avoided.
+//!
+//!
 //! ## `no_std` support
 //!
 //! By disabling the default features, `no_std` is supported. It can be
