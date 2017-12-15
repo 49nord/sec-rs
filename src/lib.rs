@@ -62,7 +62,7 @@
 //! ## Serde support (`deserialize`/`serialize` features)
 //!
 //! If the `deserialize` feature is enabled, any `Secret<T>` will automatically
-//! implement `Deserialize`:
+//! implement `Deserialize` from [Serde](https://crates.io/crates/serde):
 //!
 //! ```norun
 //! #[derive(Deserialize)]
