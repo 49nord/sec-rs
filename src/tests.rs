@@ -3,10 +3,17 @@ use super::Secret;
 use std::string::String;
 use std::borrow::ToOwned;
 
+#[cfg(feature = "serialize")]
+use serde;
 
 #[derive(Debug)]
 struct PublicStruct {
     pub secret_field: Secret<String>,
+}
+
+#[test]
+fn test_new() {
+    let _: Secret<String> = Secret::new("THIS-SHOULD-BE-SECRET".into());
 }
 
 #[test]
@@ -24,6 +31,17 @@ fn test_hidden_display() {
 }
 
 #[test]
+fn test_non_str_type() {
+    let data: Secret<usize> = Secret::new(42);
+    let data_ref: Secret<&usize> = data.as_ref();
+
+    assert_eq!("...", format!("{}", data));
+    assert_eq!("...", format!("{:?}", data));
+    assert_eq!("...", format!("{}", data_ref));
+    assert_eq!("...", format!("{:?}", data_ref));
+}
+
+#[test]
 fn test_hidden_debug() {
     let data = Secret::new("THIS-SHOULD-BE-SECRET");
 
@@ -32,81 +50,114 @@ fn test_hidden_debug() {
 
 #[test]
 fn test_as_str() {
-    unimplemented!()
+    let data: Secret<String> = Secret::new("THIS-SHOULD-BE-SECRET".into());
+    let data_str: Secret<&str> = data.as_str();
+
+    assert_eq!("...", format!("{}", data_str));
+    assert_eq!("...", format!("{:?}", data_str));
+}
+
+#[test]
+fn test_static_strings() {
+    // test static strings as well
+    let data: Secret<&'static str> = Secret::new("THIS-SHOULD-BE-SECRET");
+
+    assert_eq!("...", format!("{}", data));
+    assert_eq!("...", format!("{:?}", data));
 }
 
 #[test]
 fn test_reveal_str() {
-    unimplemented!()
-}
+    let data: Secret<String> = Secret::new("THIS-SHOULD-BE-SECRET".into());
+    let revealed: &str = data.reveal_str();
 
-#[test]
-fn test_new() {
-    unimplemented!()
+    assert_eq!("THIS-SHOULD-BE-SECRET", revealed);
 }
 
 #[test]
 fn test_as_ref() {
-    unimplemented!()
+    let data: Secret<String> = Secret::new("THIS-SHOULD-BE-SECRET".into());
+    let data_str: Secret<&String> = data.as_ref();
+
+    assert_eq!("...", format!("{}", data_str));
+    assert_eq!("...", format!("{:?}", data_str));
+}
+
+#[test]
+fn test_as_mut() {
+    let mut data: Secret<String> = Secret::new("THIS-SHOULD-BE-SECRET".into());
+    let data_str: Secret<&mut String> = data.as_mut();
+
+    assert_eq!("...", format!("{}", data_str));
+    assert_eq!("...", format!("{:?}", data_str));
 }
 
 #[test]
 fn test_reveal() {
-    unimplemented!()
+    let data_42: Secret<usize> = Secret::new(42);
+    let data_s: Secret<String> = Secret::new("THIS-SHOULD-BE-SECRET".into());
+
+    let revealed_42: &usize = data_42.reveal();
+    let revealed_s: &String = data_s.reveal();
+
+    assert_eq!(revealed_42, &42);
+    assert_eq!(revealed_s, "THIS-SHOULD-BE-SECRET");
 }
 
 #[test]
 fn test_reveal_into() {
-    unimplemented!()
+    let data_42: Secret<usize> = Secret::new(42);
+    let data_s: Secret<String> = Secret::new("THIS-SHOULD-BE-SECRET".into());
+
+    let revealed_42: usize = data_42.reveal_into();
+    let revealed_s: String = data_s.reveal_into();
+
+    assert_eq!(revealed_42, 42);
+    assert_eq!(revealed_s, "THIS-SHOULD-BE-SECRET");
 }
 
 #[test]
 fn test_map_revealed() {
-    unimplemented!()
+    let data_42: Secret<usize> = Secret::new(42);
+
+    let data_84 = data_42.map_revealed(|v| v * 2);
+
+    assert_eq!(84, data_84.reveal_into());
 }
 
 #[cfg(feature = "serialize")]
 #[test]
 fn test_serde() {
-    unimplemented!()
+    let a: Secret<u32> = Secret::new(42);
+
+    fn requires_serde<'de, T: serde::Serialize + serde::Deserialize<'de>>(_: T) {}
+    requires_serde(a);
 }
 
 #[test]
 fn test_copy() {
-    unimplemented!()
+    let a: Secret<usize> = Secret::new(42);
+    let c: Secret<usize> = a;
+
+    assert_eq!(a.reveal(), c.reveal());
 }
 
 #[test]
 fn test_clone() {
-    unimplemented!()
-}
+    let a: Secret<String> = Secret::new("AA".to_owned());
+    let c: Secret<String> = a.clone();
 
-#[test]
-fn test_eq() {
-    unimplemented!()
-}
-
-#[test]
-fn test_partial_eq() {
-    unimplemented!()
-}
-
-#[test]
-fn test_ord() {
-    unimplemented!()
-}
-
-#[test]
-fn test_partial_ord() {
-    unimplemented!()
+    assert_eq!(a.reveal(), c.reveal());
 }
 
 #[test]
 fn test_sync() {
-    unimplemented!()
+    fn requires_sync<T: Sync>(_: T) {}
+    requires_sync(Secret::new(123));
 }
 
 #[test]
 fn test_send() {
-    unimplemented!()
+    fn requires_send<T: Send>(_: T) {}
+    requires_send(Secret::new(123));
 }
