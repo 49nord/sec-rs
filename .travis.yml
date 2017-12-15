@@ -8,5 +8,5 @@ matrix:
     - rust: nightly
 cache: cargo
 script:
-  - cargo build --verbose --all --features std,serialize,deserialize
-  - cargo test --verbose --all --features std,serialize,deserialize
+  - cargo build --verbose --all --features std,serialize,deserialize,diesel_sql
+  - cargo test --verbose --all --features std,serialize,deserialize,diesel_sql
