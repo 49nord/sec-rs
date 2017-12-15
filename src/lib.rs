@@ -13,6 +13,11 @@ impl Secret<String> {
     pub fn as_str(&self) -> Secret<&str> {
         Secret(self.0.as_str())
     }
+
+    #[inline]
+    pub fn reveal_str(&self) -> &str {
+        self.0.as_str()
+    }
 }
 
 impl<T> Secret<T> {
