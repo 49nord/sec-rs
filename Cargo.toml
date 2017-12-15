@@ -14,3 +14,4 @@ std = []
 
 # serde is optional
 serialize = ["serde"]
+deserialize = ["serde"]

@@ -16,7 +16,10 @@ use core::fmt;
 use std::string::String;
 
 #[cfg(feature = "serialize")]
-use serde::{Deserializer, Serializer};
+use serde::Serializer;
+
+#[cfg(feature = "deserialize")]
+use serde::Deserializer;
 
 pub struct Secret<T>(T);
 
@@ -108,7 +111,7 @@ impl<T: serde::Serialize> serde::Serialize for Secret<T> {
     }
 }
 
-#[cfg(feature = "serialize")]
+#[cfg(feature = "deserialize")]
 impl<'de, T: serde::Deserialize<'de>> serde::Deserialize<'de> for Secret<T> {
     #[inline]
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>

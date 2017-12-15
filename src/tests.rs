@@ -127,10 +127,19 @@ fn test_map_revealed() {
 
 #[cfg(feature = "serialize")]
 #[test]
-fn test_serde() {
+fn test_serde_serialize() {
     let a: Secret<u32> = Secret::new(42);
 
-    fn requires_serde<'de, T: serde::Serialize + serde::Deserialize<'de>>(_: T) {}
+    fn requires_serde<'de, T: serde::Serialize>(_: T) {}
+    requires_serde(a);
+}
+
+#[cfg(feature = "deserialize")]
+#[test]
+fn test_serde_deserialize() {
+    let a: Secret<u32> = Secret::new(42);
+
+    fn requires_serde<'de, T: serde::Deserialize<'de>>(_: T) {}
     requires_serde(a);
 }
 
