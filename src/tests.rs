@@ -170,3 +170,29 @@ fn test_send() {
     fn requires_send<T: Send>(_: T) {}
     requires_send(Secret::new(123));
 }
+
+// FIXME: add test for the following case
+//
+// #[macro_use]
+// extern crate serde_derive;
+// extern crate serde;
+// extern crate serde_json;
+// extern crate sec;
+//
+// #[derive(Deserialize, Debug)]
+// struct AuthRequest {
+//     username: String,
+//     key_code: sec::Secret<usize>,
+// }
+//
+// fn main() {
+//     let data = r#"{
+//         "username": "Alice",
+//         "key_code": "123"
+//     }"#;
+//
+//     let res: AuthRequest = serde_json::from_str(data).unwrap();
+//     println!("Result: {:?}", res);
+// }
+//
+// the resulting panic should not leak the secret code `123`.

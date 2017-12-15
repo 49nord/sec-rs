@@ -72,7 +72,9 @@
 //! ```
 //!
 //! `AuthRequest` will be deserialized as if `password` was a regular `String`,
-//! the result will be stored as a `Secret<String>`.
+//! the result will be stored as a `Secret<String>`. Additionally, if any
+//! deserialization errors occur, the resulting serde error will be replaced
+//! to avoid leaking the unparsed value.
 //!
 //! Serialization can be enabled through the `serialize` feature.
 //!
@@ -220,12 +222,22 @@ impl<T: serde::Serialize> serde::Serialize for Secret<T> {
 }
 
 #[cfg(feature = "deserialize")]
+use serde::de::Error;
+
+#[cfg(feature = "deserialize")]
 impl<'de, T: serde::Deserialize<'de>> serde::Deserialize<'de> for Secret<T> {
     #[inline]
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {
-        T::deserialize(deserializer).map(Secret)
+        // we need to intercept the exception, as it might contain the actual
+        // raw value being deserialized
+        match T::deserialize(deserializer).map(Secret) {
+            Err(_) => Err(D::Error::custom(
+                "a confidential value could not be deserialized",
+            )),
+            Ok(v) => Ok(v),
+        }
     }
 }
