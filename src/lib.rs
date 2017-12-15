@@ -1,3 +1,99 @@
+//! sec
+//! ===
+//!
+//! The `sec` crate prevent secrets from accidentally leaking through `Debug`
+//! or `Display` implementations. It does so by wrapping any kind of
+//! confidential information in a zero-overhead type:
+//!
+//! ```rust
+//! use sec::Secret;
+//!
+//! #[derive(Debug)]
+//! struct User {
+//!     id: usize,
+//!     username: String,
+//!     session_token: Secret<String>,
+//! }
+//!
+//! let alice = User{
+//!     id: 1,
+//!     username: "alice".to_owned(),
+//!     session_token: Secret::new("no one should see this".to_owned()),
+//! };
+//!
+//! println!("Now talking to: {:?}", alice);
+//! ```
+//!
+//! This will yield the following output:
+//!
+//! ```raw
+//! Now talking to: User{ id = 1, username: String("alice"), session_token: "..." }
+//! ```
+//!
+//! This functionality is very useful when dealing with data that should always
+//! be prevented from accidentally leaking through panics, log files.
+//!
+//! The contained data can be accessed by any of the `reaveal` methods:
+//!
+//! ```rust
+//! #  use sec::Secret;
+//! #
+//! #  #[derive(Debug)]
+//! #  struct User {
+//! #      id: usize,
+//! #      username: String,
+//! #      session_token: Secret<String>,
+//! #  }
+//! #
+//! #  let alice = User{
+//! #      id: 1,
+//! #      username: "alice".to_owned(),
+//! #      session_token: Secret::new("no one should see this".to_owned()),
+//! #  };
+//! #
+//! println!("Don't tell anyone, but Alice's token is: {}",
+//!          alice.session_token.reveal());
+//! ```
+//!
+//! ## Serde support (`deserialize`/`serialize` features)
+//!
+//! If the `deserialize` feature is enabled, any `Secret<T>` will automatically
+//! implement `Deserialize`:
+//!
+//! ```norun
+//! #[derive(Deserialize)]
+//! struct AuthRequest{
+//!     username: String,
+//!     password: Secret<String>,
+//! }
+//! ```
+//!
+//! `AuthRequest` will be deserialized as if `password` was a regular `String`,
+//! the result will be stored as a `Secret<String>`.
+//!
+//! Serialization can be enabled through the `serialize` feature.
+//!
+//! **IMPORTANT**: Serializing data to a readable format is still a way to leak
+//! secrets. Only enable this feature if you need it.
+//!
+//!
+//! ## `no_std` support
+//!
+//! By disabling the default features, `no_std` is supported. It can be
+//! re-enabled through the `std` feature.
+//!
+//!
+//! ## Security
+//!
+//! While `sec` usually does a good job from preventing accidentally leaks
+//! through logging mistakes, it currently does not protect the actual memory
+//! (while not impossible, this requires a lot of extra effort due to heap
+//! allocations).
+//!
+//! If protecting cryptographic secrets in-memory from stackdumps and similar
+//! is a concern, have a look at the [secrets](https://crates.io/crates/secrets)
+//! crate or similar crates.
+
 #![no_std]
 
 #[macro_use]
@@ -21,6 +117,7 @@ use serde::Serializer;
 #[cfg(feature = "deserialize")]
 use serde::Deserializer;
 
+/// Wraps a type `T`, preventing it from being accidentally revealed.
 pub struct Secret<T>(T);
 
 #[cfg(feature = "std")]
