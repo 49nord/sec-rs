@@ -65,6 +65,7 @@ fn test_map_revealed() {
     unimplemented!()
 }
 
+#[cfg(feature = "serialize")]
 #[test]
 fn test_serde() {
     unimplemented!()

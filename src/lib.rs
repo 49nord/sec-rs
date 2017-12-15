@@ -3,6 +3,8 @@
 #[macro_use]
 #[cfg(feature = "std")]
 extern crate std;
+
+#[cfg(feature = "serialize")]
 extern crate serde;
 
 #[cfg(test)]
@@ -12,6 +14,8 @@ use core::fmt;
 
 #[cfg(feature = "std")]
 use std::string::String;
+
+#[cfg(feature = "serialize")]
 use serde::{Deserializer, Serializer};
 
 pub struct Secret<T>(T);
@@ -88,6 +92,7 @@ impl<T> From<T> for Secret<T> {
     }
 }
 
+#[cfg(feature = "serialize")]
 impl<T: serde::Serialize> serde::Serialize for Secret<T> {
     #[inline]
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -98,6 +103,7 @@ impl<T: serde::Serialize> serde::Serialize for Secret<T> {
     }
 }
 
+#[cfg(feature = "serialize")]
 impl<'de, T: serde::Deserialize<'de>> serde::Deserialize<'de> for Secret<T> {
     #[inline]
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
