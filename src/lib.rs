@@ -247,6 +247,13 @@ impl<T: Hash> Hash for Secret<T> {
     }
 }
 
+impl<T: Default> Default for Secret<T> {
+    #[inline]
+    fn default() -> Secret<T> {
+        Secret(T::default())
+    }
+}
+
 impl<T: Copy> Copy for Secret<T> {}
 impl<T: Eq> Eq for Secret<T> {}
 unsafe impl<T: Sync> Sync for Secret<T> {}
