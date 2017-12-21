@@ -128,6 +128,7 @@ mod tests;
 
 use core::fmt;
 use core::hash::{Hash, Hasher};
+use core::cmp::Ordering;
 
 #[cfg(feature = "diesel_sql")]
 use std::io::Write;
@@ -225,6 +226,20 @@ impl<T: PartialEq> PartialEq for Secret<T> {
     }
 }
 
+impl<T: PartialOrd> PartialOrd for Secret<T> {
+    #[inline]
+    fn partial_cmp(&self, other: &Secret<T>) -> Option<Ordering> {
+        self.0.partial_cmp(&other.0)
+    }
+}
+
+impl<T: Ord> Ord for Secret<T> {
+    #[inline]
+    fn cmp(&self, other: &Secret<T>) -> Ordering {
+        self.0.cmp(&other.0)
+    }
+}
+
 impl<T: Hash> Hash for Secret<T> {
     #[inline]
     fn hash<H: Hasher>(&self, state: &mut H) {
@@ -233,6 +248,7 @@ impl<T: Hash> Hash for Secret<T> {
 }
 
 impl<T: Copy> Copy for Secret<T> {}
+impl<T: Eq> Eq for Secret<T> {}
 unsafe impl<T: Sync> Sync for Secret<T> {}
 unsafe impl<T: Send> Send for Secret<T> {}
 
