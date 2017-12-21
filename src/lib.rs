@@ -127,6 +127,7 @@ extern crate serde;
 mod tests;
 
 use core::fmt;
+use core::hash::{Hash, Hasher};
 
 #[cfg(feature = "diesel_sql")]
 use std::io::Write;
@@ -219,8 +220,15 @@ impl<T: Clone> Clone for Secret<T> {
 
 impl<T: PartialEq> PartialEq for Secret<T> {
     #[inline]
-    fn partial_eq(&self, other: &Secret<T>) -> Self {
-        self.0.partial_eq(other.0)
+    fn eq(&self, other: &Secret<T>) -> bool {
+        self.0.eq(&other.0)
+    }
+}
+
+impl<T: Hash> Hash for Secret<T> {
+    #[inline]
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.0.hash(state);
     }
 }
 
