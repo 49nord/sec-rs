@@ -217,6 +217,13 @@ impl<T: Clone> Clone for Secret<T> {
     }
 }
 
+impl<T: PartialEq> PartialEq for Secret<T> {
+    #[inline]
+    fn partial_eq(&self, other: &Secret<T>) -> Self {
+        self.0.partial_eq(other.0)
+    }
+}
+
 impl<T: Copy> Copy for Secret<T> {}
 unsafe impl<T: Sync> Sync for Secret<T> {}
 unsafe impl<T: Send> Send for Secret<T> {}
