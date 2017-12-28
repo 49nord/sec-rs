@@ -13,7 +13,7 @@ serde = { version = "1.0.24", optional = true }
 [features]
 default = ["std"]
 
-# the std features enables `String` support, but requires the standard library
+# the std feature enables `String` support, but requires the standard library
 std = []
 
 # serde is optional
