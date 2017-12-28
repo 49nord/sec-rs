@@ -171,6 +171,45 @@ fn test_send() {
     requires_send(Secret::new(123));
 }
 
+#[test]
+fn test_partial_eq() {
+    let data_42: Secret<usize> = Secret::new(42);
+    let data_33: Secret<usize> = Secret::new(33);
+    let data_42_2: Secret<usize> = Secret::new(42);
+
+    // reflective
+    assert_eq!(data_42, data_42);
+
+    // equality
+    assert_eq!(data_42, data_42_2);
+
+    // inequality
+    assert_ne!(data_33, data_42_2);
+}
+
+#[test]
+fn test_partial_ord() {
+    let data_42: Secret<usize> = Secret::new(42);
+    let data_33: Secret<usize> = Secret::new(33);
+
+    assert!(data_42 > data_33);
+    assert!(data_33 < data_42);
+}
+
+#[test]
+fn test_default() {
+    let data_def: Secret<usize> = Secret::default();
+    assert_eq!(data_def.reveal_into(), 0);
+}
+
+#[test]
+fn test_hash() {
+    use std::collections::HashMap;
+
+    let mut items = HashMap::new();
+    items.insert(Secret::new(0), 0);
+}
+
 // FIXME: add test for the following case
 //
 // #[macro_use]
