@@ -5,6 +5,7 @@ version = "0.99.1"
 license = "MIT"
 repository = "https://github.com/49nord/sec-rs"
 description = "Prevent secrets from leaking via `Debug` or `Display` traits"
+documentation = "https://docs.rs/sec"
 
 [dependencies]
 diesel = { version = "0.99.0", optional = true }
