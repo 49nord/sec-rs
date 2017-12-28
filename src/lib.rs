@@ -141,6 +141,8 @@ mod tests;
 
 use core::fmt;
 use core::hash::{Hash, Hasher};
+
+#[cfg(feature = "ord")]
 use core::cmp::Ordering;
 
 #[cfg(feature = "diesel_sql")]
@@ -239,6 +241,7 @@ impl<T: PartialEq> PartialEq for Secret<T> {
     }
 }
 
+#[cfg(feature = "ord")]
 impl<T: PartialOrd> PartialOrd for Secret<T> {
     #[inline]
     fn partial_cmp(&self, other: &Secret<T>) -> Option<Ordering> {
@@ -246,6 +249,7 @@ impl<T: PartialOrd> PartialOrd for Secret<T> {
     }
 }
 
+#[cfg(feature = "ord")]
 impl<T: Ord> Ord for Secret<T> {
     #[inline]
     fn cmp(&self, other: &Secret<T>) -> Ordering {
