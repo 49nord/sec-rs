@@ -16,6 +16,9 @@ default = ["std"]
 # the std feature enables `String` support, but requires the standard library
 std = []
 
+# the ord feature enables potentially leaky PartialOrd and Ord traits
+ord = []
+
 # serde is optional
 serialize = ["serde"]
 deserialize = ["serde"]

@@ -187,6 +187,7 @@ fn test_partial_eq() {
     assert_ne!(data_33, data_42_2);
 }
 
+#[cfg(feature = "ord")]
 #[test]
 fn test_partial_ord() {
     let data_42: Secret<usize> = Secret::new(42);
