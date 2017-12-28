@@ -100,6 +100,19 @@
 //! re-enabled through the `std` feature.
 //!
 //!
+//! ## Additional traits
+//!
+//! The traits `PartialEq`, `Eq` and `Hash` are implemented for `Secret`, by
+//! simply passing through the operation to the underlying type. These traits
+//! should be safe in a way that they will not accidentally leak the enclosed
+//! secret.
+//!
+//! Additional, by enabling the `ord` feature, the `PartialOrd` and `Ord`
+//! traits will be implemented. Since ordering could potentially leak
+//! information when a collection order by a Secret is printed in-order, these
+//! are opt-in by default.
+//!
+//!
 //! ## Security
 //!
 //! While `sec` usually does a good job from preventing accidentally leaks
