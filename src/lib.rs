@@ -33,7 +33,7 @@
 //! This functionality is very useful when dealing with data that should always
 //! be prevented from accidentally leaking through panics, log files.
 //!
-//! The contained data can be accessed by any of the `reaveal` methods:
+//! The contained data can be accessed by any of the `reveal` methods:
 //!
 //! ```rust
 //! #  use sec::Secret;
