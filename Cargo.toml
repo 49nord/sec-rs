@@ -1,5 +1,5 @@
 [package]
-authors = ["Marc Brinkmann <git@marcbrinkmann.de>"]
+authors = ["Marc Brinkmann <marc@49nord.de>"]
 name = "sec"
 version = "0.99.0"
 license = "MIT"
