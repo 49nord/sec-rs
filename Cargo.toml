@@ -1,7 +1,7 @@
 [package]
 authors = ["Marc Brinkmann <marc@49nord.de>"]
 name = "sec"
-version = "0.99.3"
+version = "0.99.4"
 license = "MIT"
 repository = "https://github.com/49nord/sec-rs"
 description = "Prevent secrets from leaking via `Debug` or `Display` traits"
