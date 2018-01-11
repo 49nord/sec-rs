@@ -118,11 +118,20 @@
 //! While `sec` usually does a good job from preventing accidentally leaks
 //! through logging mistakes, it currently does not protect the actual memory
 //! (while not impossible, this requires a lot of extra effort due to heap
-//! allocations).
+//! allocations). The data protected by sec is usually sent across the network
+//! and passed around among different applications (e.g. a token authorizing a
+//! client) or could reasonably be used as a key for a HashMap.
+//!
+//! To prevent copies inside an application, data is usually allocated on the
+//! heap only and scrubbed afer deallocation. `sec` makes a trade-off in favor
+//! of performance and generality here by not supporting this pattern. It is
+//! not written to protect your GPG private key from core dumps, but rather
+//! login tokens from accidental disclosure.
 //!
 //! If protecting cryptographic secrets in-memory from stackdumps and similar
-//! is a concern, have a look at the [secrets](https://crates.io/crates/secrets)
-//! crate or similar crates.
+//! is a concern, have a look at the [secrets]
+//! (https://crates.io/crates/secrets), [secstr]
+//! (https://crates.io/crates/secstr) or similar crates.
 
 #![no_std]
 
