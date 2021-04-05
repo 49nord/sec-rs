@@ -1,7 +1,7 @@
 use super::Secret;
 
-use std::string::String;
 use std::borrow::ToOwned;
+use std::string::String;
 
 #[cfg(feature = "serialize")]
 use serde;
@@ -18,14 +18,18 @@ fn test_new() {
 
 #[test]
 fn test_hidden_debug_composite() {
-    let data = PublicStruct { secret_field: "THIS-SHOULD-BE-SECRET".to_owned().into() };
+    let data = PublicStruct {
+        secret_field: "THIS-SHOULD-BE-SECRET".to_owned().into(),
+    };
 
     assert_eq!("PublicStruct { secret_field: ... }", format!("{:?}", data));
 }
 
 #[test]
 fn test_hidden_display() {
-    let data = PublicStruct { secret_field: "THIS-SHOULD-BE-SECRET".to_owned().into() };
+    let data = PublicStruct {
+        secret_field: "THIS-SHOULD-BE-SECRET".to_owned().into(),
+    };
 
     assert_eq!("...", format!("{}", data.secret_field));
 }
