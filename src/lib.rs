@@ -328,14 +328,13 @@ impl<'de, T: serde::Deserialize<'de>> serde::Deserialize<'de> for Secret<T> {
 impl<A, DB, T> diesel::types::ToSql<A, DB> for Secret<T>
 where
     T: diesel::types::ToSql<A, DB> + fmt::Debug,
-    DB: diesel::backend::Backend
-        + diesel::types::HasSqlType<A>,
+    DB: diesel::backend::Backend + diesel::types::HasSqlType<A>,
 {
     #[inline]
     fn to_sql<W: Write>(
         &self,
-        out: &mut diesel::types::ToSqlOutput<W, DB>,
-    ) -> Result<diesel::types::IsNull, std::boxed::Box<std::error::Error + Send + Sync>> {
+        out: &mut diesel::serialize::Output<W, DB>,
+    ) -> Result<diesel::types::IsNull, std::boxed::Box<dyn std::error::Error + Send + Sync>> {
         self.0.to_sql(out)
     }
 }
@@ -353,7 +352,6 @@ where
         (&self.0).as_expression()
     }
 }
-
 
 #[cfg(all(feature = "diesel_sql", feature = "std"))]
 impl<T, ST, DB> diesel::query_source::Queryable<ST, DB> for Secret<T>
