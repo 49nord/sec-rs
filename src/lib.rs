@@ -1,9 +1,8 @@
-//! sec
-//! ===
+//! # sec
 //!
-//! The `sec` crate prevent secrets from accidentally leaking through `Debug`
-//! or `Display` implementations. It does so by wrapping any kind of
-//! confidential information in a zero-overhead type:
+//! The `sec` crate prevent secrets from accidentally leaking through `Debug` or `Display`
+//! implementations. It does so by wrapping any kind of confidential information in a zero-overhead
+//! type:
 //!
 //! ```rust
 //! use sec::Secret;
@@ -30,8 +29,8 @@
 //! Now talking to: User{ id = 1, username: String("alice"), session_token: "..." }
 //! ```
 //!
-//! This functionality is very useful when dealing with data that should always
-//! be prevented from accidentally leaking through panics, log files.
+//! This functionality is very useful when dealing with data that should always be prevented from
+//! accidentally leaking through panics, log files.
 //!
 //! The contained data can be accessed by any of the `reveal` methods:
 //!
@@ -55,14 +54,13 @@
 //!          alice.session_token.reveal());
 //! ```
 //!
-//! Only methods that contain `reveal` in their name actually allow accessing
-//! the secret value.
+//! Only methods that contain `reveal` in their name actually allow accessing the secret value.
 //!
 //!
 //! ## Serde support (`deserialize`/`serialize` features)
 //!
-//! If the `deserialize` feature is enabled, any `Secret<T>` will automatically
-//! implement `Deserialize` from [Serde](https://crates.io/crates/serde):
+//! If the `deserialize` feature is enabled, any `Secret<T>` will automatically implement
+//! `Deserialize` from [Serde](https://crates.io/crates/serde):
 //!
 //! ```ignore
 //! #[derive(Deserialize)]
@@ -72,73 +70,65 @@
 //! }
 //! ```
 //!
-//! `AuthRequest` will be deserialized as if `password` was a regular `String`,
-//! the result will be stored as a `Secret<String>`. Additionally, if any
-//! deserialization errors occur, the resulting serde error will be replaced
-//! to avoid leaking the unparsed value.
+//! `AuthRequest` will be deserialized as if `password` was a regular `String`, the result will be
+//! stored as a `Secret<String>`. Additionally, if any deserialization errors occur, the resulting
+//! serde error will be replaced to avoid leaking the unparsed value.
 //!
 //! Serialization can be enabled through the `serialize` feature.
 //!
-//! **IMPORTANT**: Serializing data to a readable format is still a way to leak
-//! secrets. Only enable this feature if you need it.
+//! **IMPORTANT**: Serializing data to a readable format is still a way to leak secrets. Only enable
+//! this feature if you need it.
 //!
 //!
 //! ## Diesel support (`diesel` feature)
 //!
 //! Limited support for inserting and loading `Secret<T>` values through
-//! [Diesel](https://crates.io/crates/diesel) can be enabled by the `diesel`
-//! feature.
+//! [Diesel](https://crates.io/crates/diesel) can be enabled by the `diesel` feature.
 //!
-//! **IMPORTANT**: The database may log and echo back (on error) any query that
-//! fails, takes to long or is otherwise deemed interesting. Using `Secret`
-//! values in expressions should be avoided.
+//! **IMPORTANT**: The database may log and echo back (on error) any query that fails, takes to long
+//! or is otherwise deemed interesting. Using `Secret` values in expressions should be avoided.
 //!
 //! ## Rocket support (`rocket` feature)
 //!
 //! Experimental support is available for `rocket`, specifically rocket's
-//! [`rocket::form::FromFormField`] trait, which is implemented for all `Secret<T>`
-//! whose underlying `T`s implemented it.
+//! [`rocket::form::FromFormField`] trait, which is implemented for all `Secret<T>` whose underlying
+//! `T`s implemented it.
 //!
 //! Note that the only supported rocket version is a pinned dev version of rocket 0.5.
 //!
 //!
 //! ## `no_std` support
 //!
-//! By disabling the default features, `no_std` is supported. It can be
-//! re-enabled through the `std` feature.
+//! By disabling the default features, `no_std` is supported. It can be re-enabled through the `std`
+//! feature.
 //!
 //!
 //! ## Additional traits
 //!
-//! The traits `PartialEq`, `Eq` and `Hash` are implemented for `Secret`, by
-//! simply passing through the operation to the underlying type. These traits
-//! should be safe in a way that they will not accidentally leak the enclosed
-//! secret.
+//! The traits `PartialEq`, `Eq` and `Hash` are implemented for `Secret`, by simply passing through
+//! the operation to the underlying type. These traits should be safe in a way that they will not
+//! accidentally leak the enclosed secret.
 //!
-//! Additional, by enabling the `ord` feature, the `PartialOrd` and `Ord`
-//! traits will be implemented. Since ordering could potentially leak
-//! information when a collection order by a Secret is printed in-order, these
-//! are opt-in by default.
+//! Additional, by enabling the `ord` feature, the `PartialOrd` and `Ord` traits will be
+//! implemented. Since ordering could potentially leak information when a collection order by a
+//! Secret is printed in-order, these are opt-in by default.
 //!
 //!
 //! ## Security
 //!
-//! While `sec` usually does a good job from preventing accidentally leaks
-//! through logging mistakes, it currently does not protect the actual memory
-//! (while not impossible, this requires a lot of extra effort due to heap
-//! allocations). The data protected by sec is usually sent across the network
-//! and passed around among different applications (e.g. a token authorizing a
-//! client) or could reasonably be used as a key for a HashMap.
+//! While `sec` usually does a good job from preventing accidentally leaks through logging mistakes,
+//! it currently does not protect the actual memory (while not impossible, this requires a lot of
+//! extra effort due to heap allocations). The data protected by sec is usually sent across the
+//! network and passed around among different applications (e.g. a token authorizing a client) or
+//! could reasonably be used as a key for a HashMap.
 //!
-//! To prevent copies inside an application, data is usually allocated on the
-//! heap only and scrubbed afer deallocation. `sec` makes a trade-off in favor
-//! of performance and generality here by not supporting this pattern. It is
-//! not written to protect your GPG private key from core dumps, but rather
-//! login tokens from accidental disclosure.
+//! To prevent copies inside an application, data is usually allocated on the heap only and scrubbed
+//! afer deallocation. `sec` makes a trade-off in favor of performance and generality here by not
+//! supporting this pattern. It is not written to protect your GPG private key from core dumps, but
+//! rather login tokens from accidental disclosure.
 //!
-//! If protecting cryptographic secrets in-memory from stackdumps and similar
-//! is a concern, have a look at the [secrets]
-//! (https://crates.io/crates/secrets), [secstr]
+//! If protecting cryptographic secrets in-memory from stackdumps and similar is a concern, have a
+//! look at the [secrets] (https://crates.io/crates/secrets), [secstr]
 //! (https://crates.io/crates/secstr) or similar crates.
 
 #![no_std]
