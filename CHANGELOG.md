@@ -12,3 +12,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Diesel version supported by the `diesel` feature is now version `1`.
+- Switch from Travis CI to Github Actions.
