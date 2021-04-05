@@ -11,6 +11,7 @@ edition = "2018"
 [dependencies]
 diesel = { version = "1", optional = true }
 serde = { version = "1.0.24", optional = true }
+rocket = { git = "https://github.com/SergioBenitez/Rocket", rev = "3045e0ac63fd5c4e2e543649c6871d896cbf9c0b", optional = true }
 
 [features]
 default = ["std"]

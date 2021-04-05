@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Add a [rocket 0.5](https://github.com/SergioBenitez/Rocket/milestone/8) feature (currently using a dev version).
+
 ### Changed
 
 - Rename the `serialize`/`deserialize` feature to `serde`.

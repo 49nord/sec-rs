@@ -163,6 +163,11 @@ use std::string::String;
 #[cfg(feature = "serde")]
 use serde::{de::Error, Deserializer, Serializer};
 
+#[cfg(feature = "rocket")]
+use rocket::form::FromForm;
+#[cfg(feature = "rocket")]
+use std::{boxed::Box, future::Future, pin::Pin};
+
 /// Wraps a type `T`, preventing it from being accidentally revealed.
 pub struct Secret<T>(T);
 
@@ -358,5 +363,38 @@ where
     #[inline]
     fn build(row: Self::Row) -> Self {
         Secret(T::build(row))
+    }
+}
+
+#[cfg(all(feature = "std", feature = "rocket"))]
+impl<'r, T> FromForm<'r> for Secret<T>
+where
+    T: FromForm<'r>,
+{
+    type Context = <T as FromForm<'r>>::Context;
+
+    fn init(opts: rocket::form::Options) -> Self::Context {
+        <T as FromForm>::init(opts)
+    }
+
+    fn push_value(ctxt: &mut Self::Context, field: rocket::form::ValueField<'r>) {
+        <T as FromForm>::push_value(ctxt, field)
+    }
+
+    fn push_data<'life0, 'life1, 'async_trait>(
+        ctxt: &'life0 mut Self::Context,
+        field: rocket::form::DataField<'r, 'life1>,
+    ) -> Pin<Box<dyn Future<Output = ()> + Send + 'async_trait>>
+    where
+        'r: 'async_trait,
+        'life0: 'async_trait,
+        'life1: 'async_trait,
+        Self: 'async_trait,
+    {
+        <T as FromForm>::push_data(ctxt, field)
+    }
+
+    fn finalize(ctxt: Self::Context) -> rocket::form::Result<'r, Self> {
+        <T as FromForm>::finalize(ctxt).map(Secret)
     }
 }
