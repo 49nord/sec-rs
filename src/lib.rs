@@ -174,7 +174,7 @@ impl Secret<String> {
         Secret(self.0.as_str())
     }
 
-    /// Return and **reveal** a `str` reference.
+    /// Returns and **reveal** a `str` reference.
     #[inline]
     pub fn reveal_str(&self) -> &str {
         self.0.as_str()
@@ -188,25 +188,25 @@ impl<T> Secret<T> {
         Secret(val)
     }
 
-    /// Create a secret immutable reference
+    /// Creates a secret immutable reference
     #[inline]
     pub fn as_ref(&self) -> Secret<&T> {
         Secret(&self.0)
     }
 
-    /// Create a secret mutable reference
+    /// Creates a secret mutable reference
     #[inline]
     pub fn as_mut(&mut self) -> Secret<&mut T> {
         Secret(&mut self.0)
     }
 
-    /// **Reveal** the held value by returning a reference
+    /// **Reveals** the held value by returning a reference
     #[inline]
     pub fn reveal(&self) -> &T {
         &self.0
     }
 
-    /// **Reveal** the held value by unwrapping
+    /// **Reveals** the held value by unwrapping
     #[inline]
     pub fn reveal_into(self) -> T {
         self.0
