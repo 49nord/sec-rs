@@ -64,7 +64,7 @@
 //! If the `deserialize` feature is enabled, any `Secret<T>` will automatically
 //! implement `Deserialize` from [Serde](https://crates.io/crates/serde):
 //!
-//! ```no_run
+//! ```ignore
 //! #[derive(Deserialize)]
 //! struct AuthRequest{
 //!     username: String,
