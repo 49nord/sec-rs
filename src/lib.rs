@@ -83,10 +83,10 @@
 //! secrets. Only enable this feature if you need it.
 //!
 //!
-//! ## Diesel support (`diesel_sql` feature)
+//! ## Diesel support (`diesel` feature)
 //!
 //! Limited support for inserting and loading `Secret<T>` values through
-//! [Diesel](https://crates.io/crates/diesel) can be enabled by the `diesel_sql`
+//! [Diesel](https://crates.io/crates/diesel) can be enabled by the `diesel`
 //! feature.
 //!
 //! **IMPORTANT**: The database may log and echo back (on error) any query that
@@ -135,14 +135,14 @@
 
 #![no_std]
 
-#[cfg(feature = "diesel_sql")]
+#[cfg(feature = "diesel")]
 extern crate diesel;
 
 #[macro_use]
 #[cfg(feature = "std")]
 extern crate std;
 
-#[cfg(any(feature = "serialize", feature = "deserialize"))]
+#[cfg(feature = "serde")]
 extern crate serde;
 
 #[cfg(test)]
@@ -154,17 +154,14 @@ use core::hash::{Hash, Hasher};
 #[cfg(feature = "ord")]
 use core::cmp::Ordering;
 
-#[cfg(feature = "diesel_sql")]
+#[cfg(feature = "diesel")]
 use std::io::Write;
 
 #[cfg(feature = "std")]
 use std::string::String;
 
-#[cfg(feature = "serialize")]
-use serde::Serializer;
-
-#[cfg(feature = "deserialize")]
-use serde::Deserializer;
+#[cfg(feature = "serde")]
+use serde::{de::Error, Deserializer, Serializer};
 
 /// Wraps a type `T`, preventing it from being accidentally revealed.
 pub struct Secret<T>(T);
@@ -292,7 +289,7 @@ impl<T> From<T> for Secret<T> {
     }
 }
 
-#[cfg(feature = "serialize")]
+#[cfg(feature = "serde")]
 impl<T: serde::Serialize> serde::Serialize for Secret<T> {
     #[inline]
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -303,10 +300,7 @@ impl<T: serde::Serialize> serde::Serialize for Secret<T> {
     }
 }
 
-#[cfg(feature = "deserialize")]
-use serde::de::Error;
-
-#[cfg(feature = "deserialize")]
+#[cfg(feature = "serde")]
 impl<'de, T: serde::Deserialize<'de>> serde::Deserialize<'de> for Secret<T> {
     #[inline]
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
@@ -324,7 +318,7 @@ impl<'de, T: serde::Deserialize<'de>> serde::Deserialize<'de> for Secret<T> {
     }
 }
 
-#[cfg(all(feature = "diesel_sql", feature = "std"))]
+#[cfg(all(feature = "diesel", feature = "std"))]
 impl<A, DB, T> diesel::types::ToSql<A, DB> for Secret<T>
 where
     T: diesel::types::ToSql<A, DB> + fmt::Debug,
@@ -339,7 +333,7 @@ where
     }
 }
 
-#[cfg(all(feature = "diesel_sql", feature = "std"))]
+#[cfg(all(feature = "diesel", feature = "std"))]
 impl<'a, E, T> diesel::expression::AsExpression<E> for &'a Secret<T>
 where
     T: diesel::expression::AsExpression<E>,
@@ -353,7 +347,7 @@ where
     }
 }
 
-#[cfg(all(feature = "diesel_sql", feature = "std"))]
+#[cfg(all(feature = "diesel", feature = "std"))]
 impl<T, ST, DB> diesel::query_source::Queryable<ST, DB> for Secret<T>
 where
     DB: diesel::backend::Backend + diesel::types::HasSqlType<ST>,

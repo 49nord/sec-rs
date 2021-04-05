@@ -20,10 +20,3 @@ std = []
 
 # the ord feature enables potentially leaky PartialOrd and Ord traits
 ord = []
-
-# serde is optional
-serialize = ["serde"]
-deserialize = ["serde"]
-
-# feature for diesel-rs
-diesel_sql = ["diesel"]
