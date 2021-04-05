@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `test.sh` to run tests.
+
 ### Changed
 
 - Diesel version supported by the `diesel` feature is now version `1`.
