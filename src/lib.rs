@@ -93,6 +93,14 @@
 //! fails, takes to long or is otherwise deemed interesting. Using `Secret`
 //! values in expressions should be avoided.
 //!
+//! ## Rocket support (`rocket` feature)
+//!
+//! Experimental support is available for `rocket`, specifically rocket's
+//! [`rocket::form::FromFormField`] trait, which is implemented for all `Secret<T>`
+//! whose underlying `T`s implemented it.
+//!
+//! Note that the only supported rocket version is a pinned dev version of rocket 0.5.
+//!
 //!
 //! ## `no_std` support
 //!
@@ -164,7 +172,7 @@ use std::string::String;
 use serde::{de::Error, Deserializer, Serializer};
 
 #[cfg(feature = "rocket")]
-use rocket::form::FromForm;
+use rocket::form::FromFormField;
 #[cfg(feature = "rocket")]
 use std::{boxed::Box, future::Future, pin::Pin};
 
@@ -367,34 +375,29 @@ where
 }
 
 #[cfg(all(feature = "std", feature = "rocket"))]
-impl<'r, T> FromForm<'r> for Secret<T>
+impl<'v, T> FromFormField<'v> for Secret<T>
 where
-    T: FromForm<'r>,
+    T: FromFormField<'v>,
 {
-    type Context = <T as FromForm<'r>>::Context;
-
-    fn init(opts: rocket::form::Options) -> Self::Context {
-        <T as FromForm>::init(opts)
+    #[inline]
+    fn from_value(field: rocket::form::ValueField<'v>) -> rocket::form::Result<'v, Self> {
+        <T as FromFormField>::from_value(field).map(Secret)
     }
 
-    fn push_value(ctxt: &mut Self::Context, field: rocket::form::ValueField<'r>) {
-        <T as FromForm>::push_value(ctxt, field)
-    }
-
-    fn push_data<'life0, 'life1, 'async_trait>(
-        ctxt: &'life0 mut Self::Context,
-        field: rocket::form::DataField<'r, 'life1>,
-    ) -> Pin<Box<dyn Future<Output = ()> + Send + 'async_trait>>
+    #[inline]
+    fn from_data<'life0, 'async_trait>(
+        field: rocket::form::DataField<'v, 'life0>,
+    ) -> Pin<Box<dyn Future<Output = rocket::form::Result<'v, Self>> + Send + 'async_trait>>
     where
-        'r: 'async_trait,
+        'v: 'async_trait,
         'life0: 'async_trait,
-        'life1: 'async_trait,
         Self: 'async_trait,
     {
-        <T as FromForm>::push_data(ctxt, field)
+        Box::pin(async move { <T as FromFormField>::from_data(field).await.map(Secret) })
     }
 
-    fn finalize(ctxt: Self::Context) -> rocket::form::Result<'r, Self> {
-        <T as FromForm>::finalize(ctxt).map(Secret)
+    #[inline]
+    fn default() -> Option<Self> {
+        <T as FromFormField>::default().map(Secret)
     }
 }
