@@ -16,6 +16,10 @@ Note: This version was not released on `crates.io`, as it depends on an unreleas
 - Rename the `serialize`/`deserialize` feature to `serde`.
 - Rename the `diesel_sql` feature to `diesel`.
 
+### Removed
+
+- Remove implementation of `Display` for `Secret`.
+
 ## [1.0.0] - 2021-04-05
 
 ### Added
