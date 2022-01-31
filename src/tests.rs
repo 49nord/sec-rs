@@ -23,15 +23,7 @@ fn test_hidden_debug_composite() {
     };
 
     assert_eq!("PublicStruct { secret_field: ... }", format!("{:?}", data));
-}
-
-#[test]
-fn test_hidden_display() {
-    let data = PublicStruct {
-        secret_field: "THIS-SHOULD-BE-SECRET".to_owned().into(),
-    };
-
-    assert_eq!("...", format!("{}", data.secret_field));
+    assert_eq!("...", format!("{:?}", data.secret_field));
 }
 
 #[test]
@@ -39,9 +31,7 @@ fn test_non_str_type() {
     let data: Secret<usize> = Secret::new(42);
     let data_ref: Secret<&usize> = data.as_ref();
 
-    assert_eq!("...", format!("{}", data));
     assert_eq!("...", format!("{:?}", data));
-    assert_eq!("...", format!("{}", data_ref));
     assert_eq!("...", format!("{:?}", data_ref));
 }
 
@@ -49,7 +39,7 @@ fn test_non_str_type() {
 fn test_hidden_debug() {
     let data = Secret::new("THIS-SHOULD-BE-SECRET");
 
-    assert_eq!("...", format!("{}", data));
+    assert_eq!("...", format!("{:?}", data));
 }
 
 #[test]
@@ -57,7 +47,6 @@ fn test_as_str() {
     let data: Secret<String> = Secret::new("THIS-SHOULD-BE-SECRET".into());
     let data_str: Secret<&str> = data.as_str();
 
-    assert_eq!("...", format!("{}", data_str));
     assert_eq!("...", format!("{:?}", data_str));
 }
 
@@ -66,7 +55,6 @@ fn test_static_strings() {
     // test static strings as well
     let data: Secret<&'static str> = Secret::new("THIS-SHOULD-BE-SECRET");
 
-    assert_eq!("...", format!("{}", data));
     assert_eq!("...", format!("{:?}", data));
 }
 
@@ -83,7 +71,6 @@ fn test_as_ref() {
     let data: Secret<String> = Secret::new("THIS-SHOULD-BE-SECRET".into());
     let data_str: Secret<&String> = data.as_ref();
 
-    assert_eq!("...", format!("{}", data_str));
     assert_eq!("...", format!("{:?}", data_str));
 }
 
@@ -92,7 +79,6 @@ fn test_as_mut() {
     let mut data: Secret<String> = Secret::new("THIS-SHOULD-BE-SECRET".into());
     let data_str: Secret<&mut String> = data.as_mut();
 
-    assert_eq!("...", format!("{}", data_str));
     assert_eq!("...", format!("{:?}", data_str));
 }
 

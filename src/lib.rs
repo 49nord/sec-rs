@@ -26,7 +26,7 @@
 //! This will yield the following output:
 //!
 //! ```raw
-//! Now talking to: User{ id = 1, username: String("alice"), session_token: "..." }
+//! Now talking to: User { id = 1, username: String("alice"), session_token: "..." }
 //! ```
 //!
 //! This functionality is very useful when dealing with data that should always be prevented from
@@ -85,8 +85,8 @@
 //! Limited support for inserting and loading `Secret<T>` values through
 //! [Diesel](https://crates.io/crates/diesel) can be enabled by the `diesel` feature.
 //!
-//! **IMPORTANT**: The database may log and echo back (on error) any query that fails, takes to long
-//! or is otherwise deemed interesting. Using `Secret` values in expressions should be avoided.
+//! **IMPORTANT**: The database may log and echo back (on error) any query that fails, takes too
+//! long or is otherwise deemed interesting. Using `Secret` values in expressions should be avoided.
 //!
 //! ## Rocket support (`rocket` feature)
 //!
@@ -223,13 +223,6 @@ impl<T> Secret<T> {
 }
 
 impl<T> fmt::Debug for Secret<T> {
-    #[inline]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "...")
-    }
-}
-
-impl<T: fmt::Display> fmt::Display for Secret<T> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "...")
